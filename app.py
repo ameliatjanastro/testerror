@@ -204,7 +204,7 @@ if so_file:
         # Initialize result DataFrame
         results = []
         dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id', 'WH ID']], on='product_id', how='left')
-        st.write(f"Forecast Dates: {forecast_dates}")
+        st.write(f"Forecast Dates: {dry_forecast_df["date_key"].unique()}")
         for day, forecast_date in enumerate(forecast_dates, start=1):
             for product_id in dry_forecast_df["product_id"].unique():
                 # Get the daily dry forecast for the given date and product ID
