@@ -219,35 +219,35 @@ if so_file:
             daily_result = daily_result.rename(columns={"wh_id": "WH ID", "hub_id": "Hub ID"})
             results.append(daily_result[["WH ID", "Hub ID", "product_id", "Sum of maxqty", f"Updated Hub Qty D+{day}", f"Predicted SO Qty D+{day}"]])
             
-        # Merge results into a single DataFrame
-        final_results_df = results[0]
-        for df in results[1:]:
-            final_results_df = final_results_df.merge(df, on=["WH ID", "Hub ID","product_id", "Sum of maxqty"], how="left")
+            # Merge results into a single DataFrame
+            final_results_df = results[0]
+            for df in results[1:]:
+                final_results_df = final_results_df.merge(df, on=["WH ID", "Hub ID","product_id", "Sum of maxqty"], how="left")
+                    
+                #final_results_df["WH Name"] = final_results_df["wh_id"].map(wh_name_mapping)
                 
-            #final_results_df["WH Name"] = final_results_df["wh_id"].map(wh_name_mapping)
+    
+             # Create two columns for better layout
+            col1, col2 = st.columns(2)
             
-
-         # Create two columns for better layout
-        col1, col2 = st.columns(2)
-        
-        # Place the select boxes in separate columns
-        with col2:
-            selected_day = st.selectbox("Select D+X day(s)", [f"D+{i}" for i in range(1, 7)])
-        
-        with col1:
-            wh_options = final_results_df["WH ID"].unique().tolist()
-            selected_wh = st.selectbox("Select WH ID", wh_options)
-        
-        # Filter the dataframe based on selected WH
-        
-        final_results_df = final_results_df.rename(columns={"Sum of maxqty": "Max Total Allocation"})
-        filtered_df = final_results_df[final_results_df["WH ID"] == selected_wh]
-        
-        if 40 in filtered_df["WH ID"].values:
-            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum() #* #0.78
-        elif 772 in filtered_df["WH ID"].values:
-            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 772, f"Predicted SO Qty {selected_day}"].sum() #*# 0.52
-        else:
-            predicted_so_sum = 0  # Default value if no matching WH ID is found
-        
-        st.metric(label="Total Predicted SO Qty", value=f"{predicted_so_sum:,.0f}")
+            # Place the select boxes in separate columns
+            with col2:
+                selected_day = st.selectbox("Select D+X day(s)", [f"D+{i}" for i in range(1, 7)])
+            
+            with col1:
+                wh_options = final_results_df["WH ID"].unique().tolist()
+                selected_wh = st.selectbox("Select WH ID", wh_options)
+            
+            # Filter the dataframe based on selected WH
+            
+            final_results_df = final_results_df.rename(columns={"Sum of maxqty": "Max Total Allocation"})
+            filtered_df = final_results_df[final_results_df["WH ID"] == selected_wh]
+            
+            if 40 in filtered_df["WH ID"].values:
+                predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum() #* #0.78
+            elif 772 in filtered_df["WH ID"].values:
+                predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 772, f"Predicted SO Qty {selected_day}"].sum() #*# 0.52
+            else:
+                predicted_so_sum = 0  # Default value if no matching WH ID is found
+            
+            st.metric(label="Total Predicted SO Qty", value=f"{predicted_so_sum:,.0f}")
