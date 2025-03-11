@@ -185,7 +185,7 @@ if so_file:
             
                 if total_so_final > 0:
                     hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of qty_so_final'] / total_so_final) * 
-                                        (dry_demand_allocation_split.get(wh_id, 0)).astype(int))
+                                        (dry_demand_allocation_split.get(wh_id, 0))).astype(int)
                 else:
                     hub_forecast = 0
             
