@@ -77,7 +77,6 @@ tab1, tab2 = st.tabs(["Next Day SO Prediction", "D+1 to D+6 SO Prediction"])
 
 dry_forecast_df = pd.read_excel("demand_dry_productid3.xlsx")
 dry_forecast_df['date_key'] = pd.to_datetime(dry_forecast_df['date_key'], errors='coerce', format='%Y-%m-%d')
-dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
 
 if so_file:
     # Load Data
@@ -207,7 +206,8 @@ if so_file:
         split_product_ids_df = pd.read_csv("splitadd.csv")
         split_product_ids = set(split_product_ids_df["product_id"].tolist())
         results = []
-        dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id','WH ID']], on='product_id', how='outer').drop_duplicates()
+        dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
+        dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id','WH ID']], on='product_id', how='right')
         
         #unique_combinations = final_so_df[['product_id', 'WH ID', 'hub_id']].drop_duplicates()
 
