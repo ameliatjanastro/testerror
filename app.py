@@ -221,13 +221,11 @@ if so_file:
                 ]["Forecast Step 3"].sum()
             
                 # Get unique product IDs for WH 40 and WH 772
-                wh_40_products = set(merged_df[merged_df["WH ID"] == 40]["product_id"].unique())
-                wh_772_products = set(merged_df[merged_df["WH ID"] == 772]["product_id"].unique())
-                    
-                # Determine product IDs that are associated with both WHs
-                common_products = wh_40_products.intersection(wh_772_products)
-                common_products = common_products.union(split_product_ids)
-                st.write(list(common_products)[:5])
+                wh_40_products = set(merged_df.loc[merged_df["WH ID"] == 40, "product_id"])
+                wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
+                
+                # Determine common products and merge with split_product_ids
+                common_products = wh_40_products & wh_772_products | split_product_ids
             
                 # Allocate Demand Forecast to WHs
                 if product_id in common_products:
