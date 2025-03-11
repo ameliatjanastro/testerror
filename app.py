@@ -202,11 +202,12 @@ if so_file:
     with tab2:
             
         # Initialize result DataFrame
+        results = []
         #temporary
         #split_product_ids_df = pd.read_csv("splitadd.csv")
         #split_product_ids = set(split_product_ids_df["product_id"].tolist())
         #split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
-        results = []
+        
         dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
         merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
         
@@ -227,7 +228,7 @@ if so_file:
                 common_products = wh_40_products.intersection(wh_772_products)#.union(split_product_ids)
                 
                 # Display a few common products for debugging
-                st.write(f"Number of common products: {len(common_products)}")
+                #st.write(f"Number of common products: {len(common_products)}")
                 
                 # Allocate Demand Forecast to WHs
                 if product_id in common_products:
@@ -243,7 +244,7 @@ if so_file:
                     dry_demand_allocation_split = {772: daily_dry_forecast}
             
             #print(f"Product ID: {product_id}, Dry Demand Allocation Split:", dry_demand_allocation_split)
-            
+          
             daily_result = final_so_df.copy()
             daily_result[f'Updated Hub Qty D+{day}'] = daily_result['Sum of hub_qty']
             dry_demand_allocation_split = {}
@@ -259,7 +260,7 @@ if so_file:
                     else:
                         hub_forecast = 0
             
-                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= hub_forecast
+                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= 0 #hub_forecast
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
                     
             # Compute Predicted SO Quantity
