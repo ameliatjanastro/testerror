@@ -207,7 +207,7 @@ if so_file:
         split_product_ids = set(split_product_ids_df["product_id"].tolist())
         results = []
         dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
-        merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3']], on='product_id', how='left')
+        merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
 
         
         #unique_combinations = final_so_df[['product_id', 'WH ID', 'hub_id']].drop_duplicates()
@@ -232,18 +232,18 @@ if so_file:
         # Combine the extended rows into a single DataFrame
         #extended_forecast_df = pd.DataFrame(pd.concat(extended_rows, ignore_index=True))
         st.write(merged_df.head())
-        st.write(f"Forecast Dates: {dry_forecast_df["date_key"].unique()}")
+        st.write(f"Forecast Dates: {merged_df["date_key"].unique()}")
         for day, forecast_date in enumerate(forecast_dates, start=1):
-            for product_id in dry_forecast_df["product_id"].unique():
+            for product_id in merged_df["product_id"].unique():
                 # Get the daily dry forecast for the given date and product ID
-                daily_dry_forecast = dry_forecast_df[
-                    (dry_forecast_df["date_key"] == forecast_date) & 
-                    (dry_forecast_df["product_id"] == product_id)
+                daily_dry_forecast = merged_df[
+                    (merged_df["date_key"] == forecast_date) & 
+                    (merged_df["product_id"] == product_id)
                 ]["Forecast Step 3"].sum()
             
                 # Get unique product IDs for WH 40 and WH 772
-                wh_40_products = set(dry_forecast_df[dry_forecast_df["WH ID"] == 40]["product_id"].unique())
-                wh_772_products = set(dry_forecast_df[dry_forecast_df["WH ID"] == 772]["product_id"].unique())
+                wh_40_products = set(merged_df[merged_df["WH ID"] == 40]["product_id"].unique())
+                wh_772_products = set(merged_df[merged_df["WH ID"] == 772]["product_id"].unique())
                     
                 # Determine product IDs that are associated with both WHs
                 common_products = wh_40_products.intersection(wh_772_products)
