@@ -224,7 +224,7 @@ if so_file:
                 wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
                 
                 # Determine common products and merge with split_product_ids
-                #common_products = wh_40_products.intersection(wh_772_products).union(split_product_ids)
+                common_products = wh_40_products.intersection(wh_772_products)#.union(split_product_ids)
                 
                 # Display a few common products for debugging
                 st.write(f"Number of common products: {len(common_products)}")
