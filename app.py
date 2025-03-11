@@ -183,7 +183,7 @@ if so_file:
           #  highlight_final_so, subset=["Sum of qty_so_final"]
         #)
 
-        selected_columns = ["WH ID", "Hub ID", "product_id", "Sum of maxqty", "Predicted SO Qty D+1"]
+        selected_columns = ["Hub Name", "Sum of qty_so", "Sum of qty_so_final", "Predicted SO Qty D+0"]
         filtered_so_df_selected = filtered_so_df[selected_columns]
         
         # Display the filtered DataFrame with selected columns
