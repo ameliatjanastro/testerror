@@ -220,41 +220,41 @@ if so_file:
             results.append(daily_result[["WH ID", "Hub ID", "product_id", "Sum of maxqty", f"Updated Hub Qty D+{day}", f"Predicted SO Qty D+{day}"]])
             
             # Merge results into a single DataFrame
-            final_results_df = results[0]
-            for df in results[1:]:
-                final_results_df = final_results_df.merge(df, on=["WH ID", "Hub ID","product_id", "Sum of maxqty"], how="left")
+    final_results_df = results[0]
+    for df in results[1:]:
+        final_results_df = final_results_df.merge(df, on=["WH ID", "Hub ID","product_id", "Sum of maxqty"], how="left")
                     
                 #final_results_df["WH Name"] = final_results_df["wh_id"].map(wh_name_mapping)
                 
     
              # Create two columns for better layout
-        col1, col2 = st.columns(2)
-            
-        # Place the select boxes in separate columns
-        with col2:
-            selected_day = st.selectbox("Select D+X day(s)", [f"D+{i}" for i in range(1, 2)])
-            
-        with col1:
-            wh_options = final_results_df["WH ID"].unique().tolist()
-            selected_wh = st.selectbox("Select WH ID", wh_options)
-            
-        # Filter the dataframe based on selected WH
-            
-        final_results_df = final_results_df.rename(columns={"Sum of maxqty": "Max Total Allocation"})
-        filtered_df = final_results_df[final_results_df["WH ID"] == selected_wh]
+    col1, col2 = st.columns(2)
+                
+            # Place the select boxes in separate columns
+    with col2:
+        selected_day = st.selectbox("Select D+X day(s)", [f"D+{i}" for i in range(1, 2)])
+                
+    with col1:
+        wh_options = final_results_df["WH ID"].unique().tolist()
+        selected_wh = st.selectbox("Select WH ID", wh_options)
+                
+            # Filter the dataframe based on selected WH
+                
+    final_results_df = final_results_df.rename(columns={"Sum of maxqty": "Max Total Allocation"})
+    filtered_df = final_results_df[final_results_df["WH ID"] == selected_wh]
 
             
             # Select relevant columns dynamically based on the chosen day
-        selected_columns = ["Hub ID","product_id", f"Updated Hub Qty {selected_day}", f"Predicted SO Qty {selected_day}", "Max Total Allocation"]
+    selected_columns = ["Hub ID","product_id", f"Updated Hub Qty {selected_day}", f"Predicted SO Qty {selected_day}", "Max Total Allocation"]
             
             # Apply selection and styling
-        styled_df = filtered_df[selected_columns].style.applymap(highlight_triggered, subset=[f"SO vs Reorder Point {selected_day}"])
+    styled_df = filtered_df[selected_columns].style.applymap(highlight_triggered, subset=[f"SO vs Reorder Point {selected_day}"])
         
             #styled_df = final_results_df.style.applymap(highlight_triggered, subset=[col for col in final_results_df.columns if "SO vs Reorder Point" in col])
     
-        styled_df = styled_df.hide(axis="index")
-        st.markdown('<h4 style="color: maroon;">Summary by WH by Day</h4>', unsafe_allow_html=True)
-        st.dataframe(styled_df, use_container_width=True)
+    styled_df = styled_df.hide(axis="index")
+    st.markdown('<h4 style="color: maroon;">Summary by WH by Day</h4>', unsafe_allow_html=True)
+    st.dataframe(styled_df, use_container_width=True)
                 
         if 40 in filtered_df["WH ID"].values:
             predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum() #* #0.78
