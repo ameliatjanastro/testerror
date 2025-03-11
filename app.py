@@ -207,7 +207,7 @@ if so_file:
         split_product_ids_df = pd.read_csv("splitadd.csv")
         split_product_ids = set(split_product_ids_df["product_id"].tolist())
         results = []
-        dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id', 'WH ID']], on='product_id', how='left')
+        dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id']], on='product_id', how='left').drop_duplicates()
         
         #unique_combinations = final_so_df[['product_id', 'WH ID', 'hub_id']].drop_duplicates()
 
