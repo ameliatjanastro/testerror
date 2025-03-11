@@ -182,10 +182,12 @@ if so_file:
             for hub_id in final_so_df.loc[final_so_df['wh_id'] == wh_id, 'hub_id'].unique():
                 hub_mask = (daily_result['wh_id'] == wh_id) & (daily_result['hub_id'] == hub_id)
                 total_so_final = final_so_df.loc[final_so_df['wh_id'] == wh_id, 'Sum of qty_so_final'].sum()
-            
+                
                 if total_so_final > 0:
+                    allocation = dry_demand_allocation_split.get(wh_id, 0)
+                    print(f"Allocation for WH ID {wh_id}: {allocation}")
                     hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of qty_so_final'] / total_so_final) * 
-                                        (dry_demand_allocation_split.get(wh_id, 0))).astype(int)
+                                        allocation
                 else:
                     hub_forecast = 0
             
