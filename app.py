@@ -315,13 +315,13 @@ if so_file:
         selected_columns = ["Hub ID","product_id", f"Updated Hub Qty {selected_day}", f"Predicted SO Qty {selected_day}", "Max Total Allocation"]
         
         # Apply selection and styling
-        styled_df = filtered_df[selected_columns].style.applymap(highlight_triggered, subset=[f"SO vs Reorder Point {selected_day}"])
+        filtered_df = filtered_df[selected_columns]
     
         #styled_df = final_results_df.style.applymap(highlight_triggered, subset=[col for col in final_results_df.columns if "SO vs Reorder Point" in col])
 
-        styled_df = styled_df.hide(axis="index")
+        #styled_df = styled_df.hide(axis="index")
         st.markdown('<h4 style="color: maroon;">Summary by WH by Day</h4>', unsafe_allow_html=True)
-        st.dataframe(styled_df, use_container_width=True)
+        st.dataframe(filtered_df, use_container_width=True)
 
         if 40 in filtered_df["WH ID"].values:
             predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum() #* #0.78
