@@ -286,7 +286,7 @@ if so_file:
         final_results_df = results[0]
         for df in results[1:]:
             final_results_df = final_results_df.merge(df, on=["WH ID", "Hub ID","product_id", "Sum of maxqty"], how="left")
-        final_results_df = final_results_df.drop_duplicates()
+        final_results_df2 = final_results_df.drop_duplicates()
         #final_results_df["WH Name"] = final_results_df["wh_id"].map(wh_name_mapping)
         
         # Display Results
@@ -311,14 +311,14 @@ if so_file:
         
         # Filter the dataframe based on selected WH
         
-        final_results_df = final_results_df.rename(columns={"Sum of maxqty": "Max Total Allocation"})
-        filtered_df = final_results_df[final_results_df["WH ID"] == selected_wh]
+        final_results_df2 = final_results_df2.rename(columns={"Sum of maxqty": "Max Total Allocation"})
+        filtered_df = final_results_df2[final_results_df["WH ID"] == selected_wh]
         
         # Select relevant columns dynamically based on the chosen day
         selected_columns = ["WH ID","Hub ID","product_id", f"Updated Hub Qty {selected_day}", f"Predicted SO Qty {selected_day}", "Max Total Allocation"]
         
         # Apply selection and styling
-        filtered_df = final_results_df[selected_columns]
+        filtered_df = filtered_df[selected_columns]
     
         #styled_df = final_results_df.style.applymap(highlight_triggered, subset=[col for col in final_results_df.columns if "SO vs Reorder Point" in col])
 
