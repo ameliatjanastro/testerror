@@ -186,7 +186,7 @@ if so_file:
                 if total_so_final > 0:
                     allocation = dry_demand_allocation_split.get(wh_id, 0)
                     print(f"Allocation for WH ID {wh_id}: {allocation}")
-                    hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of qty_so_final'] / total_so_final) * 
+                    hub_forecast = (final_so_df.loc[hub_mask, 'Sum of qty_so_final'] / total_so_final) * 
                                         allocation
                 else:
                     hub_forecast = 0
