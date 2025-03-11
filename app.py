@@ -229,7 +229,7 @@ if so_file:
                     # Default case: allocate to WH 772 (or handle as needed)
                     dry_demand_allocation_split = {772: daily_dry_forecast}
             
-            print(f"Product ID: {product_id}, Dry Demand Allocation Split:", dry_demand_allocation_split)
+            #print(f"Product ID: {product_id}, Dry Demand Allocation Split:", dry_demand_allocation_split)
             
             daily_result = final_so_df.copy()
             daily_result[f'Updated Hub Qty D+{day}'] = daily_result['Sum of hub_qty']
