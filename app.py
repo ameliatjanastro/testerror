@@ -154,8 +154,8 @@ if so_file:
             ]["Forecast Step 3"].sum()
         
             # Get unique product IDs for WH 40 and WH 772
-            wh_40_products = set(dry_forecast_df[dry_forecast_df["WH ID"] == 40]["product_id"].unique())
-            wh_772_products = set(dry_forecast_df[dry_forecast_df["WH ID"] == 772]["product_id"].unique())
+            wh_40_products = set(dry_forecast_df[dry_forecast_df["wh_id"] == 40]["product_id"].unique())
+            wh_772_products = set(dry_forecast_df[dry_forecast_df["wh_id"] == 772]["product_id"].unique())
                 
             # Determine product IDs that are associated with both WHs
             common_products = wh_40_products.intersection(wh_772_products)
@@ -178,10 +178,10 @@ if so_file:
         daily_result[f'Updated Hub Qty D+{day}'] = daily_result['Sum of hub_qty']
             
         # Iterate through each WH ID and Hub ID
-        for wh_id in final_so_df['WH ID'].unique():
-            for hub_id in final_so_df.loc[final_so_df['WH ID'] == wh_id, 'hub_id'].unique():
-                hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
-                total_so_final = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of qty_so_final'].sum()
+        for wh_id in final_so_df['wh_id'].unique():
+            for hub_id in final_so_df.loc[final_so_df['wh_id'] == wh_id, 'hub_id'].unique():
+                hub_mask = (daily_result['wh_id'] == wh_id) & (daily_result['hub_id'] == hub_id)
+                total_so_final = final_so_df.loc[final_so_df['wh_id'] == wh_id, 'Sum of qty_so_final'].sum()
             
                 if total_so_final > 0:
                     hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of qty_so_final'] / total_so_final) * 
