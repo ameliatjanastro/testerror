@@ -203,9 +203,9 @@ if so_file:
             
         # Initialize result DataFrame
         #temporary
-        split_product_ids_df = pd.read_csv("splitadd.csv")
+        #split_product_ids_df = pd.read_csv("splitadd.csv")
         #split_product_ids = set(split_product_ids_df["product_id"].tolist())
-        split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
+        #split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
         results = []
         dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
         merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
@@ -224,7 +224,7 @@ if so_file:
                 wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
                 
                 # Determine common products and merge with split_product_ids
-                common_products = wh_40_products.intersection(wh_772_products).union(split_product_ids)
+                #common_products = wh_40_products.intersection(wh_772_products).union(split_product_ids)
                 
                 # Display a few common products for debugging
                 st.write(f"Number of common products: {len(common_products)}")
