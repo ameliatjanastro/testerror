@@ -205,34 +205,13 @@ if so_file:
         #temporary
         split_product_ids_df = pd.read_csv("splitadd.csv")
         split_product_ids = set(split_product_ids_df["product_id"].tolist())
+        split_product_ids = pd.to_numeric(split_product_ids['product_id'], errors='coerce')
         results = []
         dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
         merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
-
         
-        #unique_combinations = final_so_df[['product_id', 'WH ID', 'hub_id']].drop_duplicates()
-
-        # Create an empty list to store the extended rows
-        #extended_rows = []
-        
-        # Iterate through each product ID and find matching forecast data
-        #for _, row in unique_combinations.iterrows():
-           # product_id = row['product_id']
-           # wh_id = row['WH ID']
-           # hub_id = row['hub_id']
-            
-            # Filter the forecast data for the current product_id
-            #forecast_row = dry_forecast_df[dry_forecast_df['product_id'] == product_id]
-            
-            #if not forecast_row.empty:
-                # Assign WH ID and hub_id to the forecast data
-             #   forecast_row = forecast_row.assign(**row)
-              #  extended_rows.append(forecast_row)
-        
-        # Combine the extended rows into a single DataFrame
-        #extended_forecast_df = pd.DataFrame(pd.concat(extended_rows, ignore_index=True))
-        st.write(merged_df.head())
-        st.write(f"Forecast Dates: {merged_df["date_key"].unique()}")
+        #st.write(merged_df.head())
+        #st.write(f"Forecast Dates: {merged_df["date_key"].unique()}")
         for day, forecast_date in enumerate(forecast_dates, start=1):
             for product_id in merged_df["product_id"].unique():
                 # Get the daily dry forecast for the given date and product ID
