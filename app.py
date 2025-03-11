@@ -321,7 +321,7 @@ if so_file:
         # Apply selection and styling
         filtered_df = filtered_df[selected_columns]
         filtered_df = filtered_df.dropna(how='any')
-        filtered_df = filtered_df.drop_duplicates(subset=["product_id", "WH ID", "Hub ID"])
+        filtered_df = filtered_df.drop_duplicates(subset=["product_id", "Hub ID"])
         #styled_df = final_results_df.style.applymap(highlight_triggered, subset=[col for col in final_results_df.columns if "SO vs Reorder Point" in col])
 
         #styled_df = styled_df.hide(axis="index")
