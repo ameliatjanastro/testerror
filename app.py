@@ -207,7 +207,7 @@ if so_file:
         split_product_ids_df = pd.read_csv("splitadd.csv")
         split_product_ids = set(split_product_ids_df["product_id"].tolist())
         results = []
-        dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id', 'WH ID','hub_id']], on='product_id', how='right')
+        dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id', 'WH ID','hub_id']], on='product_id', how='outer')
         st.write(dry_forecast_df.head())
         st.write(f"Forecast Dates: {dry_forecast_df["date_key"].unique()}")
         for day, forecast_date in enumerate(forecast_dates, start=1):
