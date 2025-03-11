@@ -211,13 +211,25 @@ if so_file:
         
         unique_combinations = final_so_df[['product_id', 'WH ID', 'hub_id']].drop_duplicates()
 
-        # Merge forecast data with unique combinations to extend forecast data
-        extended_forecast_df = pd.concat([
-            dry_forecast_df[dry_forecast_df['product_id'] == pid].assign(**row)
-            for row in unique_combinations.to_dict('records')
-            for pid in dry_forecast_df['product_id'].unique()
-        ])
-
+        # Create an empty list to store the extended rows
+        extended_rows = []
+        
+        # Iterate through each product ID and find matching forecast data
+        for _, row in unique_combinations.iterrows():
+            product_id = row['product_id']
+            wh_id = row['WH ID']
+            hub_id = row['hub_id']
+            
+            # Filter the forecast data for the current product_id
+            forecast_row = dry_forecast_df[dry_forecast_df['product_id'] == product_id]
+            
+            if not forecast_row.empty:
+                # Assign WH ID and hub_id to the forecast data
+                forecast_row = forecast_row.assign(**row)
+                extended_rows.append(forecast_row)
+        
+        # Combine the extended rows into a single DataFrame
+        extended_forecast_df = pd.DataFrame(pd.concat(extended_rows, ignore_index=True))
         st.write(extended_forecast_df.head())
         st.write(f"Forecast Dates: {dry_forecast_df["date_key"].unique()}")
         for day, forecast_date in enumerate(forecast_dates, start=1):
