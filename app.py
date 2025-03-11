@@ -208,9 +208,17 @@ if so_file:
         split_product_ids = set(split_product_ids_df["product_id"].tolist())
         results = []
         dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id', 'WH ID', 'hub_id']], on='product_id', how='left').drop_duplicates()
-        # Display the merged DataFrame
-        print(dry_forecast_df.head())
-        st.write(dry_forecast_df.head())
+        
+        unique_combinations = final_so_df[['product_id', 'WH ID', 'hub_id']].drop_duplicates()
+
+        # Merge forecast data with unique combinations to extend forecast data
+        extended_forecast_df = unique_combinations.merge(
+            dry_forecast_df,
+            on='product_id',
+            how='inner'  # Ensures that only matching product IDs are kept
+        )
+
+        st.write(extended_forecast_df.head())
         st.write(f"Forecast Dates: {dry_forecast_df["date_key"].unique()}")
         for day, forecast_date in enumerate(forecast_dates, start=1):
             for product_id in dry_forecast_df["product_id"].unique():
