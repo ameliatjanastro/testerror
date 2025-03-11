@@ -199,33 +199,33 @@ if so_file:
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= hub_forecast
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
                 
-        # Compute Predicted SO Quantity
-        daily_result[f'Predicted SO Qty D+{day}'] = (
-            (daily_result['Sum of maxqty'] - daily_result[f'Updated Hub Qty D+{day}']) / 
-            daily_result['Sum of multiplier']
-        ) * daily_result['Sum of multiplier']
+            # Compute Predicted SO Quantity
+            daily_result[f'Predicted SO Qty D+{day}'] = (
+                (daily_result['Sum of maxqty'] - daily_result[f'Updated Hub Qty D+{day}']) / 
+                daily_result['Sum of multiplier']
+            ) * daily_result['Sum of multiplier']
+                
+            # Adjust Predicted SO Quantity based on stock availability
+            # Merge daily_result with stock_df to add the 'stock' column
+            daily_result = daily_result.merge(stock_df[['product_id', 'stock']], on='product_id', how='left')
+                
+            # Set Predicted SO Qty to NaN if stock is less than the predicted quantity
+            daily_result.loc[daily_result['stock'] < daily_result[f'Predicted SO Qty D+{day}'], f'Predicted SO Qty D+{day}'] = np.nan
+    
+                
+                #daily_result.loc[daily_result['WH ID'] == 40, f'Predicted SO Qty D+{day}'] *= 0.71
+                #daily_result.loc[daily_result['WH ID'] == 772, f'Predicted SO Qty D+{day}'] *= 0.535
+                
+            daily_result = daily_result.rename(columns={"wh_id": "WH ID", "hub_id": "Hub ID"})
+            results.append(daily_result[["WH ID", "Hub ID", "product_id", "Sum of maxqty", f"Updated Hub Qty D+{day}", f"Predicted SO Qty D+{day}"]])
             
-        # Adjust Predicted SO Quantity based on stock availability
-        # Merge daily_result with stock_df to add the 'stock' column
-        daily_result = daily_result.merge(stock_df[['product_id', 'stock']], on='product_id', how='left')
+        # Merge results into a single DataFrame
+        final_results_df = results[0]
+        for df in results[1:]:
+            final_results_df = final_results_df.merge(df, on=["WH ID", "Hub ID","product_id", "Sum of maxqty"], how="left")
+                
+            #final_results_df["WH Name"] = final_results_df["wh_id"].map(wh_name_mapping)
             
-        # Set Predicted SO Qty to NaN if stock is less than the predicted quantity
-        daily_result.loc[daily_result['stock'] < daily_result[f'Predicted SO Qty D+{day}'], f'Predicted SO Qty D+{day}'] = np.nan
-
-            
-            #daily_result.loc[daily_result['WH ID'] == 40, f'Predicted SO Qty D+{day}'] *= 0.71
-            #daily_result.loc[daily_result['WH ID'] == 772, f'Predicted SO Qty D+{day}'] *= 0.535
-            
-        daily_result = daily_result.rename(columns={"wh_id": "WH ID", "hub_id": "Hub ID"})
-        results.append(daily_result[["WH ID", "Hub ID", "product_id", "Sum of maxqty", f"Updated Hub Qty D+{day}", f"Predicted SO Qty D+{day}"]])
-        
-    # Merge results into a single DataFrame
-    final_results_df = results[0]
-    for df in results[1:]:
-        final_results_df = final_results_df.merge(df, on=["WH ID", "Hub ID","product_id", "Sum of maxqty"], how="left")
-            
-        #final_results_df["WH Name"] = final_results_df["wh_id"].map(wh_name_mapping)
-        
 
          # Create two columns for better layout
         col1, col2 = st.columns(2)
