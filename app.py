@@ -203,6 +203,9 @@ if so_file:
     with tab2:
             
         # Initialize result DataFrame
+        #temporary
+        split_product_ids_df = pd.read_csv("splitadd.csv")
+        split_product_ids = set(split_product["product_id"].tolist())
         results = []
         dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id', 'WH ID']], on='product_id', how='left')
         st.write(f"Forecast Dates: {dry_forecast_df["date_key"].unique()}")
@@ -220,6 +223,7 @@ if so_file:
                     
                 # Determine product IDs that are associated with both WHs
                 common_products = wh_40_products.intersection(wh_772_products)
+                common_products = common_products.union(split_product)
             
                 # Allocate Demand Forecast to WHs
                 if product_id in common_products:
