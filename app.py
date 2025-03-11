@@ -253,19 +253,19 @@ if so_file:
             
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= hub_forecast
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
-            
+                    
             # Compute Predicted SO Quantity
             daily_result[f'Predicted SO Qty D+{day}'] = (
                 (daily_result['Sum of maxqty'] - daily_result[f'Updated Hub Qty D+{day}']) / 
                 daily_result['Sum of multiplier']
             ) * daily_result['Sum of multiplier']
-            
+            daily_result[f'Predicted SO Qty D+{day}'] = daily_result[f'Predicted SO Qty D+{day}'].clip(lower=0)
             # Adjust Predicted SO Quantity based on stock availability
             # Merge daily_result with stock_df to add the 'stock' column
             daily_result = daily_result.merge(stock_df[['product_id', 'stock']], on='product_id', how='left')
             
             # Set Predicted SO Qty to NaN if stock is less than the predicted quantity
-            daily_result.loc[daily_result['stock'] < daily_result[f'Predicted SO Qty D+{day}'], f'Predicted SO Qty D+{day}'] = np.nan
+            daily_result.loc[daily_result['stock'] < daily_result[f'Predicted SO Qty D+{day}'].sum(), f'Predicted SO Qty D+{day}'] = np.nan
 
             print(daily_result[[f'Predicted SO Qty D+{day}', 'stock']])
             
@@ -318,7 +318,7 @@ if so_file:
         selected_columns = ["WH ID","Hub ID","product_id", f"Updated Hub Qty {selected_day}", f"Predicted SO Qty {selected_day}", "Max Total Allocation"]
         
         # Apply selection and styling
-        filtered_df = filtered_df[selected_columns]
+        filtered_df = final_results_df[selected_columns]
     
         #styled_df = final_results_df.style.applymap(highlight_triggered, subset=[col for col in final_results_df.columns if "SO vs Reorder Point" in col])
 
