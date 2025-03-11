@@ -76,7 +76,7 @@ tab1, tab2 = st.tabs(["Next Day SO Prediction", "D+1 to D+6 SO Prediction"])
 #fresh_pgs_forecast_file = st.file_uploader("Upload Fresh PGS Demand Forecast CSV", type=["xlsx"])
 
 dry_forecast_df = pd.read_excel("demand_dry_productid.xlsx")
-
+dry_forecast_df['date_key'] = pd.to_datetime(dry_forecast_df['date_key'])
 
 if so_file:
     # Load Data
