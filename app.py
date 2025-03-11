@@ -265,7 +265,7 @@ if so_file:
             daily_result = daily_result.merge(stock_df[['product_id', 'stock']], on='product_id', how='left')
             
             # Set Predicted SO Qty to NaN if stock is less than the predicted quantity
-            daily_result.loc[daily_result['stock'] < daily_result[f'Predicted SO Qty D+{day}'].sum(), f'Predicted SO Qty D+{day}'] = np.nan
+            daily_result.loc[daily_result['stock'] < daily_result[f'Predicted SO Qty D+{day}'], f'Predicted SO Qty D+{day}'] = np.nan
 
             print(daily_result[[f'Predicted SO Qty D+{day}', 'stock']])
             
