@@ -236,9 +236,9 @@ if so_file:
                         772: int(daily_dry_forecast * 0.62),
                         40: int(daily_dry_forecast * 0.38)
                     }
-                elif product_id in wh_40_products:
+                elif product_id in wh_40_df:
                     dry_demand_allocation_split = {40: int(daily_dry_forecast)}
-                elif product_id in wh_772_products:
+                elif product_id in wh_772_df:
                     dry_demand_allocation_split = {772: int(daily_dry_forecast)}
                 else:
                     dry_demand_allocation_split = {772: daily_dry_forecast}
