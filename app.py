@@ -101,7 +101,7 @@ if so_file:
     stock_df = pd.read_excel('gab.xlsx')
 
     # Merge the stock data with the final SO data on 'product_id'
-    final_so_df = final_so_df.merge(stock_df, on=['product_id','wh_id'], how='left')
+    #final_so_df = final_so_df.merge(stock_df, on=['product_id','wh_id'], how='left')
 
      # Hub ID to Hub Name mapping
     hub_name_mapping = {
