@@ -207,30 +207,30 @@ if so_file:
         split_product_ids_df = pd.read_csv("splitadd.csv")
         split_product_ids = set(split_product_ids_df["product_id"].tolist())
         results = []
-        #dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id', 'WH ID', 'hub_id']], on='product_id', how='left').drop_duplicates()
+        dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id', 'WH ID', 'hub_id']], on='product_id', how='right').drop_duplicates()
         
-        unique_combinations = final_so_df[['product_id', 'WH ID', 'hub_id']].drop_duplicates()
+        #unique_combinations = final_so_df[['product_id', 'WH ID', 'hub_id']].drop_duplicates()
 
         # Create an empty list to store the extended rows
-        extended_rows = []
+        #extended_rows = []
         
         # Iterate through each product ID and find matching forecast data
-        for _, row in unique_combinations.iterrows():
-            product_id = row['product_id']
-            wh_id = row['WH ID']
-            hub_id = row['hub_id']
+        #for _, row in unique_combinations.iterrows():
+           # product_id = row['product_id']
+           # wh_id = row['WH ID']
+           # hub_id = row['hub_id']
             
             # Filter the forecast data for the current product_id
-            forecast_row = dry_forecast_df[dry_forecast_df['product_id'] == product_id]
+            #forecast_row = dry_forecast_df[dry_forecast_df['product_id'] == product_id]
             
-            if not forecast_row.empty:
+            #if not forecast_row.empty:
                 # Assign WH ID and hub_id to the forecast data
-                forecast_row = forecast_row.assign(**row)
-                extended_rows.append(forecast_row)
+             #   forecast_row = forecast_row.assign(**row)
+              #  extended_rows.append(forecast_row)
         
         # Combine the extended rows into a single DataFrame
-        extended_forecast_df = pd.DataFrame(pd.concat(extended_rows, ignore_index=True))
-        st.write(extended_forecast_df.head())
+        #extended_forecast_df = pd.DataFrame(pd.concat(extended_rows, ignore_index=True))
+        st.write(dry_forecast_df.head())
         st.write(f"Forecast Dates: {dry_forecast_df["date_key"].unique()}")
         for day, forecast_date in enumerate(forecast_dates, start=1):
             for product_id in dry_forecast_df["product_id"].unique():
