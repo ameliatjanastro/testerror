@@ -82,7 +82,7 @@ if so_file:
     # Load Data
     final_so_df = pd.read_excel(so_file)
 
-    
+    #ospo sit multiplier sebar rata
     # Get forecast dates D+1 to D+6
 
     forecast_dates = [(today + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(1, 7)]
@@ -227,7 +227,7 @@ if so_file:
                 # Determine product IDs that are associated with both WHs
                 common_products = wh_40_products.intersection(wh_772_products)
                 common_products = common_products.union(split_product_ids)
-                st.write(common_products.head())
+                st.write(common_products[:5])
             
                 # Allocate Demand Forecast to WHs
                 if product_id in common_products:
@@ -276,7 +276,7 @@ if so_file:
             # Set Predicted SO Qty to NaN if stock is less than the predicted quantity
             daily_result.loc[daily_result['stock'] < daily_result[f'Predicted SO Qty D+{day}'], f'Predicted SO Qty D+{day}'] = np.nan
 
-            print(daily_result[[f'Predicted SO Qty D+{day}', 'stock']])
+            #print(daily_result[[f'Predicted SO Qty D+{day}', 'stock']])
             
             #daily_result.loc[daily_result['WH ID'] == 40, f'Predicted SO Qty D+{day}'] *= 0.71
             #daily_result.loc[daily_result['WH ID'] == 772, f'Predicted SO Qty D+{day}'] *= 0.535
