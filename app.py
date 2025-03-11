@@ -227,6 +227,7 @@ if so_file:
                 # Determine product IDs that are associated with both WHs
                 common_products = wh_40_products.intersection(wh_772_products)
                 common_products = common_products.union(split_product_ids)
+                st.write(common_products.head())
             
                 # Allocate Demand Forecast to WHs
                 if product_id in common_products:
