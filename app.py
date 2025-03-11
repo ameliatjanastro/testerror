@@ -203,35 +203,34 @@ if so_file:
             
         # Initialize result DataFrame
         results = []
+        dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id', 'WH ID']], on='product_id', how='left')
         
         for day, forecast_date in enumerate(forecast_dates, start=1):
-            # Get daily demand forecast
-            # Get the daily dry forecast for the given date and product ID
-            daily_dry_forecast = dry_forecast_df[
-                (dry_forecast_df["date_key"] == forecast_date) & 
-                (dry_forecast_df["product_id"] == product_id)
-            ]["Forecast Step 3"].sum()
+            for product_id in dry_forecast_df["product_id"].unique():
+                # Get the daily dry forecast for the given date and product ID
+                daily_dry_forecast = dry_forecast_df[
+                    (dry_forecast_df["date_key"] == forecast_date) & 
+                    (dry_forecast_df["product_id"] == product_id)
+                ]["Forecast Step 3"].sum()
             
-            # Get unique product IDs for WH 40 and WH 772
-            wh_40_products = set(dry_forecast_df[dry_forecast_df["wh_id"] == 40]["product_id"].unique())
-            wh_772_products = set(dry_forecast_df[dry_forecast_df["wh_id"] == 772]["product_id"].unique())
+                # Get unique product IDs for WH 40 and WH 772
+                wh_40_products = set(dry_forecast_df[dry_forecast_df["WH ID"] == 40]["product_id"].unique())
+                wh_772_products = set(dry_forecast_df[dry_forecast_df["WH ID"] == 772]["product_id"].unique())
+                    
+                # Determine product IDs that are associated with both WHs
+                common_products = wh_40_products.intersection(wh_772_products)
             
-            # Determine product IDs that are associated with both WHs
-            common_products = wh_40_products.intersection(wh_772_products)
-            
-            # Allocate Demand Forecast to WHs
-            if product_id in common_products:
-                dry_demand_allocation_split = {
-                    772: int(daily_dry_forecast * 0.62), 
-                    40: int(daily_dry_forecast * 0.38)
-                }
-            else:
-                if product_id in wh_772_products:
-                    dry_demand_allocation_split = {772: daily_dry_forecast}
+                # Allocate Demand Forecast to WHs
+                if product_id in common_products:
+                    dry_demand_allocation_split = {
+                        772: int(daily_dry_forecast * 0.62),
+                        40: int(daily_dry_forecast * 0.38)
+                    }
                 elif product_id in wh_40_products:
-                    dry_demand_allocation_split = {40: daily_dry_forecast}
+                    dry_demand_allocation_split = {40: int(daily_dry_forecast)}
+                elif product_id in wh_772_products:
+                    dry_demand_allocation_split = {772: int(daily_dry_forecast)}
                 else:
-                    # Default case: allocate to WH 772 (or handle as needed)
                     dry_demand_allocation_split = {772: daily_dry_forecast}
             
             #print(f"Product ID: {product_id}, Dry Demand Allocation Split:", dry_demand_allocation_split)
