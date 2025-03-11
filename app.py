@@ -160,45 +160,45 @@ if so_file:
             # Determine product IDs that are associated with both WHs
             common_products = wh_40_products.intersection(wh_772_products)
         
+                
             
-        
-                    
-        daily_result = final_so_df.copy()
-        daily_result[f'Updated Hub Qty D+{day}'] = daily_result['Sum of hub_qty']
-            
-        # Iterate through each WH ID and Hub ID
-        for wh_id in final_so_df['wh_id'].unique():
-            for hub_id in final_so_df.loc[final_so_df['wh_id'] == wh_id, 'hub_id'].unique():
-                hub_mask = (daily_result['wh_id'] == wh_id) & (daily_result['hub_id'] == hub_id)
-                total_so_final = final_so_df.loc[final_so_df['wh_id'] == wh_id, 'Sum of qty_so_final'].sum()
-
-                product_id = final_so_df.loc[hub_mask, 'product_id'].values[0]
-
-                # Allocate Demand Forecast to WHs
-                if product_id in common_products:
-                    dry_demand_allocation_split = {
-                        772: int(daily_dry_forecast * 0.62),
-                        40: int(daily_dry_forecast * 0.38)
-                    }
-                elif product_id in wh_40_products:
-                    dry_demand_allocation_split = {40: int(daily_dry_forecast)}
-                elif product_id in wh_772_products:
-                    dry_demand_allocation_split = {772: int(daily_dry_forecast)}
-                else:
-                    dry_demand_allocation_split = {}
-                    
-                    
-                if total_so_final > 0:
-                    allocation = dry_demand_allocation_split.get(wh_id, 0)
-                    print(f"Allocation for WH ID {wh_id}: {allocation}")
-                    hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of qty_so_final'] / total_so_final) * 
-                                        allocation)
-                else:
-                    hub_forecast = 0
-            
-                daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= hub_forecast
-                daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
-            
+                        
+            daily_result = final_so_df.copy()
+            daily_result[f'Updated Hub Qty D+{day}'] = daily_result['Sum of hub_qty']
+                
+            # Iterate through each WH ID and Hub ID
+            for wh_id in final_so_df['wh_id'].unique():
+                for hub_id in final_so_df.loc[final_so_df['wh_id'] == wh_id, 'hub_id'].unique():
+                    hub_mask = (daily_result['wh_id'] == wh_id) & (daily_result['hub_id'] == hub_id)
+                    total_so_final = final_so_df.loc[final_so_df['wh_id'] == wh_id, 'Sum of qty_so_final'].sum()
+    
+                    product_id = final_so_df.loc[hub_mask, 'product_id'].values[0]
+    
+                    # Allocate Demand Forecast to WHs
+                    if product_id in common_products:
+                        dry_demand_allocation_split = {
+                            772: int(daily_dry_forecast * 0.62),
+                            40: int(daily_dry_forecast * 0.38)
+                        }
+                    elif product_id in wh_40_products:
+                        dry_demand_allocation_split = {40: int(daily_dry_forecast)}
+                    elif product_id in wh_772_products:
+                        dry_demand_allocation_split = {772: int(daily_dry_forecast)}
+                    else:
+                        dry_demand_allocation_split = {}
+                        
+                        
+                    if total_so_final > 0:
+                        allocation = dry_demand_allocation_split.get(wh_id, 0)
+                        print(f"Allocation for WH ID {wh_id}: {allocation}")
+                        hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of qty_so_final'] / total_so_final) * 
+                                            allocation)
+                    else:
+                        hub_forecast = 0
+                
+                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= hub_forecast
+                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
+                
         # Compute Predicted SO Quantity
         daily_result[f'Predicted SO Qty D+{day}'] = (
             (daily_result['Sum of maxqty'] - daily_result[f'Updated Hub Qty D+{day}']) / 
