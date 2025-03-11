@@ -280,7 +280,7 @@ if so_file:
             #st.dataframe(sample_wh[["Sum of maxqty", "Updated Hub Qty D+1", "Sum of multiplier", "Predicted SO Qty D+1"]])
             
             daily_result = daily_result.rename(columns={"wh_id": "WH ID", "hub_id": "Hub ID"})
-            results.append(daily_result[["WH ID", "Hub ID", "product_id", "Sum of maxqty", f"Updated Hub Qty D+{day}", f"Predicted SO Qty D+{day}"]])
+            results.append(daily_result[["WH ID", "Hub ID", "product_id", "Sum of maxqty", f"Updated Hub Qty D+{day}", f"Predicted SO Qty D+{day}","stock"]])
             
         # Merge results into a single DataFrame
         final_results_df = results[0]
@@ -315,7 +315,7 @@ if so_file:
         filtered_df = final_results_df2[final_results_df["WH ID"] == selected_wh]
         
         # Select relevant columns dynamically based on the chosen day
-        selected_columns = ["WH ID","Hub ID","product_id", f"Updated Hub Qty {selected_day}", f"Predicted SO Qty {selected_day}", "Max Total Allocation"]
+        selected_columns = ["WH ID","Hub ID","product_id", f"Updated Hub Qty {selected_day}", f"Predicted SO Qty {selected_day}", "Max Total Allocation","stock"]
         
         # Apply selection and styling
         filtered_df = filtered_df[selected_columns]
