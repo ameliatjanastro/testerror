@@ -179,13 +179,15 @@ if so_file:
         filtered_so_df = final_so_df[final_so_df["WH Name"] == selected_wh]
         
         # Apply styling to filtered DataFrame
-        styled_filtered_so = filtered_so_df[["Hub Name", "Sum of qty_so", "Sum of qty_so_final", "Predicted SO Qty D+0"]].style.apply(
-            highlight_final_so, subset=["Sum of qty_so_final"]
-        )
+        #styled_filtered_so = filtered_so_df[["Hub Name", "Sum of qty_so", "Sum of qty_so_final", "Predicted SO Qty D+0"]].style.apply(
+          #  highlight_final_so, subset=["Sum of qty_so_final"]
+        #)
 
-        # Display Final SO DataFrame with highlight
-
-        st.dataframe(styled_filtered_so, use_container_width=True)
+        selected_columns = ["WH ID", "Hub ID", "product_id", "Sum of maxqty", "Predicted SO Qty D+1"]
+        filtered_so_df_selected = filtered_so_df[selected_columns]
+        
+        # Display the filtered DataFrame with selected columns
+        st.dataframe(filtered_so_df_selected, use_container_width=True)
         #st.dataframe(filtered_so_df[["Hub Name", "Sum of qty_so", "Sum of qty_so_final", "Predicted SO Qty D+0"]])
 
         csv1 = final_so_df.to_csv(index=False).encode('utf-8')
