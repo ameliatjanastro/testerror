@@ -119,14 +119,14 @@ if so_file:
     final_so_df = final_so_df.merge(stock_df, on=['product_id','wh_id'], how='left')
 
     # Load Stock in Transit to Hub
-    stock_in_transit_df = pd.read_excel('sit.xlsx')
+    #stock_in_transit_df = pd.read_excel('sit.xlsx')
     
     # Merge stock in transit with the final SO DataFrame
-    final_so_df = final_so_df.merge(stock_in_transit_df, on=['wh_id', 'hub_id'], how='left')
-    final_so_df['quantity'] = final_so_df['quantity'].fillna(0)
+   # final_so_df = final_so_df.merge(stock_in_transit_df, on=['wh_id', 'hub_id'], how='left')
+    #final_so_df['quantity'] = final_so_df['quantity'].fillna(0)
 
     # Add stock in transit to the hub quantity
-    final_so_df['Sum of hub_qty'] += final_so_df['quantity']
+    #final_so_df['Sum of hub_qty'] += final_so_df['quantity']
     
     # Load Incoming Stock to WH
     #incoming_ospo = pd.read_excel('ospo.xlsx')
