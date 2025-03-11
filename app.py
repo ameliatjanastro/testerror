@@ -271,7 +271,9 @@ if so_file:
             
             #daily_result.loc[daily_result['WH ID'] == 40, f'Predicted SO Qty D+{day}'] *= 0.71
             #daily_result.loc[daily_result['WH ID'] == 772, f'Predicted SO Qty D+{day}'] *= 0.535
-            daily_result[f'Predicted SO Qty D+{day}'] = daily_result[f'Predicted SO Qty D+{day}'].fillna(0)
+            
+            #daily_result[f'Predicted SO Qty D+{day}'] = daily_result[f'Predicted SO Qty D+{day}'].fillna(0)
+            
             #daily_result[f'Predicted SO Qty D+{day}'] = daily_result[f'Predicted SO Qty D+{day}'].clip(lower=0).astype(int)
             
             #sample_wh = daily_result[(daily_result["wh_id"] == 160) & (daily_result["hub_id"] == 121)].head()
