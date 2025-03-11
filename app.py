@@ -207,7 +207,8 @@ if so_file:
         split_product_ids = set(split_product_ids_df["product_id"].tolist())
         results = []
         dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
-        dry_forecast_df = dry_forecast_df.merge(final_so_df[['product_id','WH ID']], on='product_id', how='right')
+        merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3']], on='product_id', how='left')
+
         
         #unique_combinations = final_so_df[['product_id', 'WH ID', 'hub_id']].drop_duplicates()
 
@@ -230,7 +231,7 @@ if so_file:
         
         # Combine the extended rows into a single DataFrame
         #extended_forecast_df = pd.DataFrame(pd.concat(extended_rows, ignore_index=True))
-        st.write(dry_forecast_df.head())
+        st.write(merged_df.head())
         st.write(f"Forecast Dates: {dry_forecast_df["date_key"].unique()}")
         for day, forecast_date in enumerate(forecast_dates, start=1):
             for product_id in dry_forecast_df["product_id"].unique():
