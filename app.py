@@ -207,10 +207,10 @@ if so_file:
         #split_product_ids_df = pd.read_csv("splitadd.csv")
         #split_product_ids = set(split_product_ids_df["product_id"].tolist())
         #split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
-        
+        st.markdown("""
         dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
         merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
-        
+        """)
         #st.write(merged_df.head())
         #st.write(f"Forecast Dates: {merged_df["date_key"].unique()}")
         for day, forecast_date in enumerate(forecast_dates, start=1):
@@ -220,7 +220,7 @@ if so_file:
                     (merged_df["date_key"] == forecast_date) & 
                     (merged_df["product_id"] == product_id)
                 ]["Forecast Step 3"].sum()
-            
+                st.markdown("""
                 wh_40_products = set(merged_df.loc[merged_df["WH ID"] == 40, "product_id"])
                 wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
                 
@@ -244,7 +244,7 @@ if so_file:
                     dry_demand_allocation_split = {772: daily_dry_forecast}
             
             #print(f"Product ID: {product_id}, Dry Demand Allocation Split:", dry_demand_allocation_split)
-          
+              """)
             daily_result = final_so_df.copy()
             daily_result[f'Updated Hub Qty D+{day}'] = daily_result['Sum of hub_qty']
             dry_demand_allocation_split = {}
@@ -253,13 +253,13 @@ if so_file:
                 for hub_id in final_so_df.loc[final_so_df['WH ID'] == wh_id, 'hub_id'].unique():
                     hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
                     total_so_final = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of qty_so_final'].sum()
-            
+                    st.markdown("""
                     if total_so_final > 0:
                         hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of qty_so_final'] / total_so_final) * 
                                         (dry_demand_allocation_split.get(wh_id, 0)))
                     else:
                         hub_forecast = 0
-            
+                    """)
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= 0 #hub_forecast
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
                     
