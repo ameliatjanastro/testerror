@@ -237,7 +237,7 @@ if so_file:
             
             daily_result = final_so_df.copy()
             daily_result[f'Updated Hub Qty D+{day}'] = daily_result['Sum of hub_qty']
-            
+            dry_demand_allocation_split = {}
             # Iterate through each WH ID and Hub ID
             for wh_id in final_so_df['WH ID'].unique():
                 for hub_id in final_so_df.loc[final_so_df['WH ID'] == wh_id, 'hub_id'].unique():
