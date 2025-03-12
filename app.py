@@ -16,7 +16,7 @@ st.sidebar.markdown(f"📅 Today’s Date: **{today}**")
 
 # File Upload Section
 so_file = st.sidebar.file_uploader("Upload SQL-estimated SO (after 9 PM best :) )", type=["xlsx"])
-
+stock_df = st.sidebar.file_uploader("Upload SOH WH)", type=["xlsx"])
 st.markdown(
     """
     <style>
@@ -98,7 +98,7 @@ if so_file:
     final_so_df = final_so_df[~final_so_df['hub_id'].isin([537, 758])]
     final_so_df = final_so_df[~final_so_df['wh_id'].isin([583])]
 
-    stock_df = st.sidebar.file_uploader("Upload SOH WH)", type=["xlsx"])
+    
 
     # Merge the stock data with the final SO data on 'product_id'
     #final_so_df = final_so_df.merge(stock_df, on=['product_id','wh_id'], how='left')
@@ -204,9 +204,9 @@ if so_file:
         # Initialize result DataFrame
         results = []
         #temporary
-        split_product_ids_df = pd.read_csv("splitadd.csv")
-        split_product_ids = set(split_product_ids_df["product_id"].tolist())
-        split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
+        #split_product_ids_df = pd.read_csv("splitadd.csv")
+        #split_product_ids = set(split_product_ids_df["product_id"].tolist())
+        #split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
         
         dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
         merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
@@ -225,7 +225,7 @@ if so_file:
                 wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
                 
                 # Determine common products and merge with split_product_ids
-                common_products = wh_40_products.intersection(wh_772_products).union(split_product_ids)
+                common_products = wh_40_products.intersection(wh_772_products)#.union(split_product_ids)
                 
                 # Display a few common products for debugging
                 #st.write(f"Number of common products: {len(common_products)}")
