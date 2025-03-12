@@ -208,40 +208,40 @@ if so_file:
         #split_product_ids = set(split_product_ids_df["product_id"].tolist())
         #split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
         
-        dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
-        merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
+        #dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
+        #merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
         
         #st.write(merged_df.head())
         #st.write(f"Forecast Dates: {merged_df["date_key"].unique()}")
-        for day, forecast_date in enumerate(forecast_dates, start=1):
-            for product_id in merged_df["product_id"].unique():
+        #for day, forecast_date in enumerate(forecast_dates, start=1):
+            #for product_id in merged_df["product_id"].unique():
                 # Get the daily dry forecast for the given date and product ID
-                daily_dry_forecast = merged_df[
-                    (merged_df["date_key"] == forecast_date) & 
-                    (merged_df["product_id"] == product_id)
-                ]["Forecast Step 3"].sum()
+                #daily_dry_forecast = merged_df[
+                    #(merged_df["date_key"] == forecast_date) & 
+                    #(merged_df["product_id"] == product_id)
+                #]["Forecast Step 3"].sum()
                 
-                wh_40_products = set(merged_df.loc[merged_df["WH ID"] == 40, "product_id"])
-                wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
+                #wh_40_products = set(merged_df.loc[merged_df["WH ID"] == 40, "product_id"])
+                #wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
                 
                 # Determine common products and merge with split_product_ids
-                common_products = wh_40_products.intersection(wh_772_products)#.union(split_product_ids)
+                #common_products = wh_40_products.intersection(wh_772_products)#.union(split_product_ids)
                 
                 # Display a few common products for debugging
                 #st.write(f"Number of common products: {len(common_products)}")
                 
                 # Allocate Demand Forecast to WHs
-                if product_id in common_products:
-                    dry_demand_allocation_split = {
-                        772: int(daily_dry_forecast * 0.62),
-                        40: int(daily_dry_forecast * 0.38)
-                    }
-                elif product_id in wh_40_products:
-                    dry_demand_allocation_split = {40: int(daily_dry_forecast)}
-                elif product_id in wh_772_products:
-                    dry_demand_allocation_split = {772: int(daily_dry_forecast)}
-                else:
-                    dry_demand_allocation_split = {772: daily_dry_forecast}
+                #if product_id in common_products:
+                    #dry_demand_allocation_split = {
+                        #772: int(daily_dry_forecast * 0.62),
+                        #40: int(daily_dry_forecast * 0.38)
+                    #}
+                #elif product_id in wh_40_products:
+                    #dry_demand_allocation_split = {40: int(daily_dry_forecast)}
+                #elif product_id in wh_772_products:
+                    #dry_demand_allocation_split = {772: int(daily_dry_forecast)}
+                #else:
+                    #dry_demand_allocation_split = {772: daily_dry_forecast}
             
             #print(f"Product ID: {product_id}, Dry Demand Allocation Split:", dry_demand_allocation_split)
              
@@ -251,16 +251,16 @@ if so_file:
             # Iterate through each WH ID and Hub ID
             for wh_id in final_so_df['WH ID'].unique():
                 for hub_id in final_so_df.loc[final_so_df['WH ID'] == wh_id, 'hub_id'].unique():
-                    hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
+                    #hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
                     total_maxqty = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of maxqty'].sum()
                     
-                    if total_so_final > 0:
-                        hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of maxqty'] / total_maxqty) * 
-                                        (dry_demand_allocation_split.get(wh_id, 0)))
-                    else:
-                        hub_forecast = 0
+                    #if total_so_final > 0:
+                        #hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of maxqty'] / total_maxqty) * 
+                                        #(dry_demand_allocation_split.get(wh_id, 0)))
+                    #else:
+                        #hub_forecast = 0
                     
-                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= hub_forecast
+                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= 0 #hub_forecast
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
                     
             # Compute Predicted SO Quantity
