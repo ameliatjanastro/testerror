@@ -256,8 +256,8 @@ if so_file:
                     #total_maxqty = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of maxqty'].sum()
                     
                     #if total_so_final > 0:
-                        hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of maxqty'] / total_maxqty) * 
-                                        (dry_demand_allocation_split.get(wh_id, 0)))
+                        #hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of maxqty'] / total_maxqty) * 
+                                        #(dry_demand_allocation_split.get(wh_id, 0)))
                     #else:
                         #hub_forecast = 0
                     
