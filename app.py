@@ -251,7 +251,7 @@ if so_file:
             # Iterate through each WH ID and Hub ID
             for wh_id in final_so_df['WH ID'].unique():
                 for hub_id in final_so_df.loc[final_so_df['WH ID'] == wh_id, 'hub_id'].unique():
-                    #hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
+                    hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
                     total_maxqty = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of maxqty'].sum()
                     
                     #if total_so_final > 0:
