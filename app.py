@@ -272,6 +272,13 @@ if so_file:
             # Adjust Predicted SO Quantity based on stock availability
             # Merge daily_result with stock_df to add the 'stock' column
             #stock_df = stock_df.rename(columns={"wh_id": "WH ID"})
+           
+            daily_result['product_id'] = pd.to_numeric(daily_result['product_id'], errors='coerce')
+            daily_result['WH ID'] = pd.to_numeric(daily_result['WH ID'], errors='coerce')
+            
+            stock_df['product_id'] = pd.to_numeric(stock_df['product_id'], errors='coerce')
+            stock_df['WH ID'] = pd.to_numeric(stock_df['WH ID'], errors='coerce')
+
             daily_result = daily_result.merge(stock_df[['product_id', 'WH ID', 'stock']], on=['WH ID','product_id'], how='left')
             
             # Set Predicted SO Qty to NaN if stock is less than the predicted quantity
