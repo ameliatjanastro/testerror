@@ -271,7 +271,7 @@ if so_file:
             daily_result[f'Predicted SO Qty D+{day}'] = daily_result[f'Predicted SO Qty D+{day}'].clip(lower=0)
             # Adjust Predicted SO Quantity based on stock availability
             # Merge daily_result with stock_df to add the 'stock' column
-            stock_df = stock_df.rename(columns={"wh_id": "WH ID"})
+            #stock_df = stock_df.rename(columns={"wh_id": "WH ID"})
             daily_result = daily_result.merge(stock_df[['product_id', 'WH ID', 'stock']], on=['WH ID','product_id'], how='left')
             
             # Set Predicted SO Qty to NaN if stock is less than the predicted quantity
