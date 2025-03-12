@@ -208,18 +208,18 @@ if so_file:
         #split_product_ids = set(split_product_ids_df["product_id"].tolist())
         #split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
         
-        #dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
-        #merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
+        dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
+        merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
         
         #st.write(merged_df.head())
         #st.write(f"Forecast Dates: {merged_df["date_key"].unique()}")
-        #for day, forecast_date in enumerate(forecast_dates, start=1):
-            #for product_id in merged_df["product_id"].unique():
+        for day, forecast_date in enumerate(forecast_dates, start=1):
+            for product_id in merged_df["product_id"].unique():
                 # Get the daily dry forecast for the given date and product ID
-                #daily_dry_forecast = merged_df[
-                    #(merged_df["date_key"] == forecast_date) & 
-                    #(merged_df["product_id"] == product_id)
-                #]["Forecast Step 3"].sum()
+                daily_dry_forecast = merged_df[
+                    (merged_df["date_key"] == forecast_date) & 
+                    (merged_df["product_id"] == product_id)
+                ]["Forecast Step 3"].sum()
                 
                 #wh_40_products = set(merged_df.loc[merged_df["WH ID"] == 40, "product_id"])
                 #wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
