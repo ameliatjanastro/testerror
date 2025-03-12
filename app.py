@@ -173,7 +173,7 @@ if so_file:
         
         # Display WH-level summary with highlight
         st.markdown('<h4 style="color: maroon;">Summary by WH</h4>', unsafe_allow_html=True)
-        st.dataframe(styled_wh_summary, use_container_width=True)
+        st.dataframe(wh_summary_df, use_container_width=True)
         
         # Select WH dropdown
         st.markdown('<h4 style="color: maroon;">Summary by Hub</h4>', unsafe_allow_html=True)
