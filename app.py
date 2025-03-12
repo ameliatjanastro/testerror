@@ -222,27 +222,27 @@ if so_file:
                     (merged_df["product_id"] == product_id)
                 ]["Forecast Step 3"].sum()
                 
-                wh_40_products = set(merged_df.loc[merged_df["WH ID"] == 40, "product_id"])
-                wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
+                #wh_40_products = set(merged_df.loc[merged_df["WH ID"] == 40, "product_id"])
+                #wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
                 
                 # Determine common products and merge with split_product_ids
-                common_products = wh_40_products.intersection(wh_772_products)#.union(split_product_ids)
+                #common_products = wh_40_products.intersection(wh_772_products)#.union(split_product_ids)
                 
                 # Display a few common products for debugging
                 #st.write(f"Number of common products: {len(common_products)}")
                 
                 # Allocate Demand Forecast to WHs
-                if product_id in common_products:
-                    dry_demand_allocation_split = {
-                        772: int(daily_dry_forecast * 0.62),
-                        40: int(daily_dry_forecast * 0.38)
-                    }
-                elif product_id in wh_40_products:
-                    dry_demand_allocation_split = {40: int(daily_dry_forecast)}
-                elif product_id in wh_772_products:
-                    dry_demand_allocation_split = {772: int(daily_dry_forecast)}
-                else:
-                    dry_demand_allocation_split = {772: daily_dry_forecast}
+                #if product_id in common_products:
+                    #dry_demand_allocation_split = {
+                        #772: int(daily_dry_forecast * 0.62),
+                        #40: int(daily_dry_forecast * 0.38)
+                    #}
+                #elif product_id in wh_40_products:
+                    #dry_demand_allocation_split = {40: int(daily_dry_forecast)}
+                #elif product_id in wh_772_products:
+                    #dry_demand_allocation_split = {772: int(daily_dry_forecast)}
+                #else:
+                    #dry_demand_allocation_split = {772: daily_dry_forecast}
             
             #print(f"Product ID: {product_id}, Dry Demand Allocation Split:", dry_demand_allocation_split)
              
@@ -253,15 +253,15 @@ if so_file:
             for wh_id in final_so_df['WH ID'].unique():
                 for hub_id in final_so_df.loc[final_so_df['WH ID'] == wh_id, 'hub_id'].unique():
                     hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
-                    total_maxqty = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of maxqty'].sum()
+                    #total_maxqty = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of maxqty'].sum()
                     
-                    if total_so_final > 0:
+                    #if total_so_final > 0:
                         hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of maxqty'] / total_maxqty) * 
                                         (dry_demand_allocation_split.get(wh_id, 0)))
-                    else:
-                        hub_forecast = 0
+                    #else:
+                        #hub_forecast = 0
                     
-                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= hub_forecast
+                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= 0 #hub_forecast
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
                     
             # Compute Predicted SO Quantity
@@ -350,9 +350,9 @@ if so_file:
         st.dataframe(filtered_df, use_container_width=True)
 
         if 40 in filtered_df["WH ID"].values:
-            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum() #* #0.78
+            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum() -10000
         elif 772 in filtered_df["WH ID"].values:
-            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 772, f"Predicted SO Qty {selected_day}"].sum() #*# 0.52
+            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 772, f"Predicted SO Qty {selected_day}"].sum() -3000
         else:
             predicted_so_sum = 0  # Default value if no matching WH ID is found
         
