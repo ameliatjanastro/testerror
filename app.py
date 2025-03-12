@@ -98,7 +98,7 @@ if so_file:
     final_so_df = final_so_df[~final_so_df['hub_id'].isin([537, 758])]
     final_so_df = final_so_df[~final_so_df['wh_id'].isin([583])]
 
-    stock_df = pd.read_excel('gab.xlsx')
+    stock_df = st.sidebar.file_uploader("Upload SOH WH)", type=["xlsx"])
 
     # Merge the stock data with the final SO data on 'product_id'
     #final_so_df = final_so_df.merge(stock_df, on=['product_id','wh_id'], how='left')
@@ -158,18 +158,18 @@ if so_file:
         final_so_df["Hub Name"] = final_so_df["hub_id"].map(hub_name_mapping)
         final_so_df = final_so_df.rename(columns={"wh_id": "WH ID"})
 
-        def highlight_final_so(s):
-            return ['background-color: #FFFACD' if s.name == 'Sum of qty_so_final' else '' for _ in s]
+        #def highlight_final_so(s):
+            #return ['background-color: #FFFACD' if s.name == 'Sum of qty_so_final' else '' for _ in s]
 
         # Create a WH-level aggregated DataFrame
         wh_summary_df = final_so_df.groupby("WH Name").agg({
-        'Sum of qty_so': 'sum',
-        'Predicted SO Qty D+0': 'sum',
-        'Sum of qty_so_final': 'sum'
+        #'Sum of qty_so': 'sum',
+        'Predicted SO Qty D+0': 'sum'
+        #'Sum of qty_so_final': 'sum'
         }).reset_index()
         
         # Apply styling
-        styled_wh_summary = wh_summary_df.style.apply(highlight_final_so, subset=["Sum of qty_so_final"])
+        #styled_wh_summary = wh_summary_df.style.apply(highlight_final_so, subset=["Sum of qty_so_final"])
         
         # Display WH-level summary with highlight
         st.markdown('<h4 style="color: maroon;">Summary by WH</h4>', unsafe_allow_html=True)
@@ -188,7 +188,7 @@ if so_file:
           #  highlight_final_so, subset=["Sum of qty_so_final"]
         #)
 
-        selected_columns = ["Hub Name", "Sum of qty_so", "Sum of qty_so_final", "Predicted SO Qty D+0"]
+        selected_columns = ["Hub Name", "Predicted SO Qty D+0"]
         filtered_so_df_selected = filtered_so_df[selected_columns]
         
         # Display the filtered DataFrame with selected columns
@@ -204,9 +204,9 @@ if so_file:
         # Initialize result DataFrame
         results = []
         #temporary
-        #split_product_ids_df = pd.read_csv("splitadd.csv")
-        #split_product_ids = set(split_product_ids_df["product_id"].tolist())
-        #split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
+        split_product_ids_df = pd.read_csv("splitadd.csv")
+        split_product_ids = set(split_product_ids_df["product_id"].tolist())
+        split_product_ids = pd.to_numeric(split_product_ids_df['product_id'], errors='coerce')
         
         dry_forecast_df['product_id'] = pd.to_numeric(dry_forecast_df['product_id'], errors='coerce')
         merged_df = final_so_df[['product_id', 'WH ID']].merge(dry_forecast_df[['product_id', 'Forecast Step 3','date_key']], on='product_id', how='left')
@@ -221,27 +221,27 @@ if so_file:
                     (merged_df["product_id"] == product_id)
                 ]["Forecast Step 3"].sum()
                 
-                #wh_40_products = set(merged_df.loc[merged_df["WH ID"] == 40, "product_id"])
-                #wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
+                wh_40_products = set(merged_df.loc[merged_df["WH ID"] == 40, "product_id"])
+                wh_772_products = set(merged_df.loc[merged_df["WH ID"] == 772, "product_id"])
                 
                 # Determine common products and merge with split_product_ids
-                #common_products = wh_40_products.intersection(wh_772_products)#.union(split_product_ids)
+                common_products = wh_40_products.intersection(wh_772_products)#.union(split_product_ids)
                 
                 # Display a few common products for debugging
-                #st.write(f"Number of common products: {len(common_products)}")
+                st.write(f"Number of common products: {len(common_products)}")
                 
                 # Allocate Demand Forecast to WHs
-                #if product_id in common_products:
-                    #dry_demand_allocation_split = {
-                        #772: int(daily_dry_forecast * 0.62),
-                        #40: int(daily_dry_forecast * 0.38)
-                    #}
-                #elif product_id in wh_40_products:
-                    #dry_demand_allocation_split = {40: int(daily_dry_forecast)}
-                #elif product_id in wh_772_products:
-                    #dry_demand_allocation_split = {772: int(daily_dry_forecast)}
-                #else:
-                    #dry_demand_allocation_split = {772: daily_dry_forecast}
+                if product_id in common_products:
+                    dry_demand_allocation_split = {
+                        772: int(daily_dry_forecast * 0.62),
+                        40: int(daily_dry_forecast * 0.38)
+                    }
+                elif product_id in wh_40_products:
+                    dry_demand_allocation_split = {40: int(daily_dry_forecast)}
+                elif product_id in wh_772_products:
+                    dry_demand_allocation_split = {772: int(daily_dry_forecast)}
+                else:
+                    dry_demand_allocation_split = {772: daily_dry_forecast}
             
             #print(f"Product ID: {product_id}, Dry Demand Allocation Split:", dry_demand_allocation_split)
              
@@ -252,10 +252,10 @@ if so_file:
             for wh_id in final_so_df['WH ID'].unique():
                 for hub_id in final_so_df.loc[final_so_df['WH ID'] == wh_id, 'hub_id'].unique():
                     hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
-                    total_so_final = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of qty_so_final'].sum()
+                    total_maxqty = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of maxqty'].sum()
                     
                     if total_so_final > 0:
-                        hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of qty_so_final'] / total_so_final) * 
+                        hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of maxqty'] / total_maxqty) * 
                                         (dry_demand_allocation_split.get(wh_id, 0)))
                     else:
                         hub_forecast = 0
