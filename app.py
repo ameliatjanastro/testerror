@@ -255,13 +255,13 @@ if so_file:
                     hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
                     total_maxqty = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of maxqty'].sum()
                     
-                    #if total_so_final > 0:
-                        #hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of maxqty'] / total_maxqty) * 
+                    if total_so_final > 0:
+                        hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of maxqty'] / total_maxqty) * 
                                         #(dry_demand_allocation_split.get(wh_id, 0)))
-                    #else:
-                        #hub_forecast = 0
+                    else:
+                        hub_forecast = 0
                     
-                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= 0 #hub_forecast
+                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= hub_forecast
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
                     
             # Compute Predicted SO Quantity
