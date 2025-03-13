@@ -103,7 +103,7 @@ if so_file:
 
     # Merge the stock data with the final SO data on 'product_id'
     #final_so_df = final_so_df.merge(stock_df, on=['product_id','wh_id'], how='left')
-    # karena berat exclude ospo dan sit
+    # karena berat exclude ospo dan sit sementara
     
      # Hub ID to Hub Name mapping
     hub_name_mapping = {
@@ -267,19 +267,11 @@ if so_file:
                     
             # Compute Predicted SO Quantity
             daily_result[f'Predicted SO Qty D+{day}'] = (
-                (daily_result['Sum of maxqty'] - daily_result[f'Updated Hub Qty D+{day}']) / 
-                daily_result['Sum of multiplier']
-            ) * daily_result['Sum of multiplier']
+                (daily_result['Sum of maxqty'] - daily_result[f'Updated Hub Qty D+{day}']) / daily_result['Sum of multiplier']) * daily_result['Sum of multiplier']
             daily_result[f'Predicted SO Qty D+{day}'] = daily_result[f'Predicted SO Qty D+{day}'].clip(lower=0)
+            
             # Adjust Predicted SO Quantity based on stock availability
             # Merge daily_result with stock_df to add the 'stock' column
-            #stock_df = stock_df.rename(columns={"wh_id": "WH ID"})
-           
-            #daily_result['product_id'] = pd.to_numeric(daily_result['product_id'], errors='coerce')
-            #daily_result['WH ID'] = pd.to_numeric(daily_result['WH ID'], errors='coerce')
-            
-            #stock_df['product_id'] = pd.to_numeric(stock_df['product_id'], errors='coerce')
-            #stock_df['WH ID'] = pd.to_numeric(stock_df['WH ID'], errors='coerce')
 
             daily_result = daily_result.merge(stock_df[['product_id', 'WH ID', 'stock']], on=['WH ID','product_id'], how='left')
             
@@ -288,6 +280,7 @@ if so_file:
         
             # Set Predicted SO Qty to NaN if stock is less than the predicted SO Qty
             daily_result.loc[ daily_result['stock'] < total_predicted_so, f'Predicted SO Qty D+{day}'] = np.nan
+            
             #daily_result.loc[daily_result['stock'] < daily_result[f'Predicted SO Qty D+{day}'], f'Predicted SO Qty D+{day}'] = np.nan
 
             #print(daily_result[[f'Predicted SO Qty D+{day}', 'stock']])
@@ -298,9 +291,6 @@ if so_file:
             #daily_result[f'Predicted SO Qty D+{day}'] = daily_result[f'Predicted SO Qty D+{day}'].fillna(0)
             
             #daily_result[f'Predicted SO Qty D+{day}'] = daily_result[f'Predicted SO Qty D+{day}'].clip(lower=0).astype(int)
-            
-            #sample_wh = daily_result[(daily_result["wh_id"] == 160) & (daily_result["hub_id"] == 121)].head()
-            #st.dataframe(sample_wh[["Sum of maxqty", "Updated Hub Qty D+1", "Sum of multiplier", "Predicted SO Qty D+1"]])
             
             daily_result = daily_result.rename(columns={"wh_id": "WH ID", "hub_id": "Hub ID"})
             results.append(daily_result[["WH ID", "Hub ID", "product_id", "Sum of maxqty", f"Updated Hub Qty D+{day}", f"Predicted SO Qty D+{day}","stock"]])
@@ -351,7 +341,7 @@ if so_file:
         st.dataframe(filtered_df, use_container_width=True)
 
         if 40 in filtered_df["WH ID"].values:
-            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum() -29000
+            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum()
         elif 772 in filtered_df["WH ID"].values:
             predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 772, f"Predicted SO Qty {selected_day}"].sum() 
         else:
