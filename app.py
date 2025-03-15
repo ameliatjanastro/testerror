@@ -86,7 +86,7 @@ if so_file:
     #ospo sit multiplier sebar rata
     # Get forecast dates D+1 to D+6
 
-    forecast_dates = [(today - datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(1, 2)]
+    forecast_dates = [(today + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(6)]
     
     # Filter forecast data for D+1 to D+6
     dry_forecast_df = dry_forecast_df[dry_forecast_df["date_key"].isin(forecast_dates)]
@@ -252,17 +252,37 @@ if so_file:
             dry_demand_allocation_split = {}
             # Iterate through each WH ID and Hub ID
             for wh_id in final_so_df['WH ID'].unique():
+                total_maxqty = final_so_df.loc[(final_so_df['WH ID'] == wh_id) & (final_so_df['product_id'] == product_id),'Sum of maxqty'].sum()
                 for hub_id in final_so_df.loc[final_so_df['WH ID'] == wh_id, 'hub_id'].unique():
                     hub_mask = (daily_result['WH ID'] == wh_id) & (daily_result['hub_id'] == hub_id)
-                    total_maxqty = final_so_df.loc[final_so_df['WH ID'] == wh_id, 'Sum of maxqty'].sum()
                     
                     if total_maxqty > 0:
                         hub_forecast = ((final_so_df.loc[hub_mask, 'Sum of maxqty'] / total_maxqty) * 
                                         (dry_demand_allocation_split.get(wh_id, 0)))
-                    else:
-                        hub_forecast = 0
+
+                        upload_time = pd.Timestamp.now()
+                        upload_hour = upload_time.hour
+                        hourly_percentages = [
+                            1.45, 0.88, 0.57, 0.62, 0.68, 1.15, 2.10, 3.60, 4.80, 5.49, 5.77, 5.85,
+                            5.42, 5.71, 5.75, 7.17, 7.53, 6.33, 5.46, 6.06, 5.83, 5.07, 4.02, 2.70
+                        ]
+                        
+                        # Convert to a DataFrame for easier handling
+                        hourly_df = pd.DataFrame(hourly_percentages, columns=['percentage'])
+                        
+                        # Normalize the percentages to sum up to 1
+                        hourly_df['normalized'] = hourly_df['percentage'] / hourly_df['percentage'].sum()
+                        
+                        # Calculate the remaining percentage after the upload hour
+                        remaining_percentage = hourly_df.loc[upload_hour:, 'normalized'].sum()
+                        
+                        # Adjust the hub forecast based on the remaining percentage
+                        adjusted_hub_forecast = hub_forecast * remaining_percentage
                     
-                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= hub_forecast
+                    else:
+                        adjusted_hub_forecast = 0
+                    
+                    daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] -= adjusted_hub_forecast
                     daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'] = daily_result.loc[hub_mask, f'Updated Hub Qty D+{day}'].clip(lower=0)
                     
             # Compute Predicted SO Quantity
