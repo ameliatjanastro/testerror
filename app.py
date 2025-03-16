@@ -361,9 +361,9 @@ if so_file:
         st.dataframe(filtered_df, use_container_width=True)
 
         if 40 in filtered_df["WH ID"].values:
-            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum()-14000
+            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 40, f"Predicted SO Qty {selected_day}"].sum()
         elif 772 in filtered_df["WH ID"].values:
-            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 772, f"Predicted SO Qty {selected_day}"].sum() - 5600
+            predicted_so_sum = filtered_df.loc[filtered_df["WH ID"] == 772, f"Predicted SO Qty {selected_day}"].sum()
         else:
             predicted_so_sum = 0  # Default value if no matching WH ID is found
         
