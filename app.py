@@ -205,6 +205,7 @@ if so_file:
             
         # Initialize result DataFrame
         results = []
+        prev_day_predicted_so = pd.Series(0, index=final_so_df.index)
         #temporary
         #split_product_ids_df = pd.read_csv("splitadd.csv")
         #split_product_ids = set(split_product_ids_df["product_id"].tolist())
@@ -314,7 +315,7 @@ if so_file:
             
             daily_result = daily_result.rename(columns={"wh_id": "WH ID", "hub_id": "Hub ID"})
             results.append(daily_result[["WH ID", "Hub ID", "product_id", "Sum of maxqty", f"Updated Hub Qty D+{day}", f"Predicted SO Qty D+{day}","stock"]])
-            
+            prev_day_predicted_so = daily_result[f'Predicted SO Qty D+{day}'].copy()
         # Merge results into a single DataFrame
         final_results_df = results[0]
         for df in results[1:]:
