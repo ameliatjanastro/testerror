@@ -76,7 +76,7 @@ tab1, tab2 = st.tabs(["Next Day SO Prediction", "D+1 to D+6 SO Prediction"])
 #fresh_cbn_forecast_file = st.file_uploader("Upload Fresh CBN Demand Forecast CSV", type=["xlsx"])
 #fresh_pgs_forecast_file = st.file_uploader("Upload Fresh PGS Demand Forecast CSV", type=["xlsx"])
 
-dry_forecast_df = pd.read_excel("demand_dry_productid3.xlsx")
+dry_forecast_df = pd.read_excel("demand_dry_productid_march.xlsx")
 dry_forecast_df['date_key'] = pd.to_datetime(dry_forecast_df['date_key'], errors='coerce', format='%Y-%m-%d')
 
 if so_file:
@@ -86,7 +86,7 @@ if so_file:
     #ospo sit multiplier sebar rata
     # Get forecast dates D+1 to D+6
 
-    forecast_dates = [(today - datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(2)]
+    forecast_dates = [(today + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(6)]
     
     # Filter forecast data for D+1 to D+6
     dry_forecast_df = dry_forecast_df[dry_forecast_df["date_key"].isin(forecast_dates)]
