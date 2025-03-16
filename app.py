@@ -86,7 +86,7 @@ if so_file:
     #ospo sit multiplier sebar rata
     # Get forecast dates D+1 to D+6
 
-    forecast_dates = [(today + datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(6)]
+    forecast_dates = [(today - datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(2)]
     
     # Filter forecast data for D+1 to D+6
     dry_forecast_df = dry_forecast_df[dry_forecast_df["date_key"].isin(forecast_dates)]
